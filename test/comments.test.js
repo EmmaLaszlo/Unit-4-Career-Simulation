@@ -26,7 +26,7 @@ beforeAll(async () => {
     [email]
   );
   userId = userRes.rows[0].id;
-
+  // Insert an item and review for the comment to attach to
   await dbComments.query(`
     INSERT INTO items (id, name, description)
     VALUES (1, 'Comment Item', 'For comment test')
@@ -47,12 +47,12 @@ afterAll(async () => {
   await dbComments.end();
 });
 
-describe("Comments Endpoints", () => {
+describe("Comments", () => {
   it("should add a comment to review 1", async () => {
-    const res = await requestComments(appComments)
-      .post("/api/reviews/1/comments")
-      .set("Authorization", `Bearer ${commentToken}`)
-      .send({ body: "Absolutely agree!" });
+    const res = await requestComments(appComments) // supertest
+      .post("/api/reviews/1/comments") // add the comment to review 1
+      .set("Authorization", `Bearer ${commentToken}`) // adds the JWT bc you need to be logged in
+      .send({ body: "Absolutely agree!" }); // this is the comment sent to the body
     expect(res.statusCode).toBe(201);
     expect(res.body.body).toBe("Absolutely agree!");
   });
